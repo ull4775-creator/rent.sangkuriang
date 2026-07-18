@@ -15,19 +15,19 @@
         * { margin: 0; padding: 0; box-sizing: border-box; scroll-behavior: smooth; }
         body { font-family: 'Poppins', sans-serif; color: #fff; background: var(--dark); overflow-x: hidden; }
         
-        /* BACKGROUND VIDEO DENGAN FALLBACK IMAGE YANG LEBIH AMAN */
+        /* BACKGROUND VIDEO DENGAN FALLBACK IMAGE GANDA */
         .fixed-video-bg {
             position: fixed; top: 0; left: 0; width: 100vw; height: 100vh;
             z-index: -9999; pointer-events: none; overflow: hidden;
-            background-color: #050505; /* Warna dasar gelap */
-            background-image: url('{{ asset("assets/images/logo.png") }}'); /* Fallback image via CSS */
+            background-color: #050505;
+            background-image: url('{{ asset("assets/images/logo.png") }}');
             background-size: cover;
             background-position: center;
         }
         .fixed-video-bg img {
             width: 100%; height: 100%; object-fit: cover; 
             position: absolute; top: 0; left: 0; z-index: -2;
-            opacity: 0.5; /* Dibuat agak transparan agar tidak terlalu dominan jika video gagal */
+            opacity: 0.5;
         }
         .fixed-video-bg video {
             width: 100%; height: 100%; object-fit: cover; 
@@ -64,7 +64,7 @@
         .section-label { color: var(--primary); letter-spacing: 3px; font-size: 0.8rem; font-weight: 700; text-transform: uppercase; display: block; margin-bottom: 12px; }
         .section-title { font-size: 2.5rem; margin-bottom: 16px; }
         
-        /* 3D GLASS CARD */
+        /* 3D GLASS CARD - RESPONSIVE FIX */
         .grid-catalog { display: grid; grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); gap: 28px; }
         .glass-card { 
             background: var(--glass-bg); border: 1px solid rgba(255,255,255,0.1); 
@@ -161,17 +161,24 @@
 
         @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
         
-        /* RESPONSIVE MOBILE */
+        /* RESPONSIVE MOBILE FIX TOTAL */
         @media(max-width: 768px) {
             .nav-menu { position: fixed; top: 0; right: -100%; width: 80%; height: 100vh; background: #050505; flex-direction: column; padding: 100px 32px; transition: 0.4s; z-index: 999; }
             .nav-menu.active { right: 0; }
             .hamburger { display: flex; }
             .btn-nav { display: none; }
-            .grid-catalog, .grid-features, .social-grid { grid-template-columns: 1fr; }
+            
+            /* MEMAKSA GRID MENJADI 1 KOLOM DI HP */
+            .grid-catalog, .grid-features, .social-grid { grid-template-columns: 1fr !important; gap: 20px; }
+            
             .modal-specs { grid-template-columns: 1fr; }
             .map-wrapper { height: 280px; transform: none; border-radius: 16px; }
             .map-wrapper:hover { transform: scale(1.02); }
             .map-btn-float { font-size: 0.9rem; padding: 12px 24px; }
+            
+            /* Menyesuaikan ukuran font judul di HP */
+            .section-title { font-size: 2rem; }
+            .hero-desc { font-size: 1rem; }
         }
     </style>
 </head>
@@ -224,7 +231,7 @@
                 @foreach($products as $product)
                     @if(!is_array($product)) @continue @endif
                     @php 
-                        // PERBAIKAN PATH GAMBAR PRODUK: Pastikan nama file di folder public/uploads/products/ huruf kecil semua
+                        // PERBAIKAN PATH GAMBAR PRODUK: Mengubah nama file menjadi lowercase otomatis
                         $firstImg = !empty($product['images']) ? strtolower($product['images'][0]) : 'placeholder.jpg'; 
                         $safeProduct = [
                             'id' => $product['id'] ?? 0, 'name' => $product['name'] ?? 'Produk',
