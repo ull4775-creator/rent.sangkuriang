@@ -5,15 +5,31 @@ use Illuminate\Foundation\Configuration\Exceptions;
 use Illuminate\Foundation\Configuration\Middleware;
 use Illuminate\Http\Request;
 
-// FIX VERCEL: Arahkan storage ke /tmp karena filesystem Vercel read-only
-if (getenv('VERCEL') === '1' || getenv('IS_VERCEL') === '1') {
-    // Buat folder temporary di /tmp agar writable
-    @mkdir('/tmp/storage', 0755, true);
-    @mkdir('/tmp/storage/framework', 0755, true);
-    @mkdir('/tmp/storage/framework/cache', 0755, true);
-    @mkdir('/tmp/storage/framework/sessions', 0755, true);
-    @mkdir('/tmp/storage/framework/views', 0755, true);
-    @mkdir('/tmp/storage/logs', 0755, true);
+// FIX VERCEL: Deteksi environment serverless & arahkan storage ke /tmp
+$isVercel = getenv('VERCEL') === '1' 
+         || getenv('IS_VERCEL') === '1' 
+         || str_contains(getenv('HOME') ?? '', '/var/task');
+
+if ($isVercel) {
+    // Buat struktur folder lengkap di /tmp (writable di Vercel)
+    $tmpDirs = [
+        '/tmp/storage',
+        '/tmp/storage/framework',
+        '/tmp/storage/framework/cache',
+        '/tmp/storage/framework/sessions', 
+        '/tmp/storage/framework/views',
+        '/tmp/storage/logs',
+    ];
+    
+    foreach ($tmpDirs as $dir) {
+        if (!is_dir($dir)) {
+            @mkdir($dir, 0755, true);
+        }
+    }
+    
+    // Arahkan Laravel menggunakan /tmp sebagai storage path
+    // PENTING: Harus dilakukan SEBELUM Application::configure()
+    $_ENV['LARAVEL_STORAGE_PATH'] = '/tmp/storage';
 }
 
 return Application::configure(basePath: dirname(__DIR__))
