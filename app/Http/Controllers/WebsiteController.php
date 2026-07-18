@@ -8,20 +8,26 @@ class WebsiteController extends Controller
 {
     public function index()
     {
-        // Mengambil data langsung dari file array (tanpa database)
-        $products = collect(require base_path('app/Data/products_data.php'));
+        // PERBAIKAN PATH: Menggunakan app_path() untuk folder app/Data/
+        $rawProducts = include app_path('Data/products_data.php');
         
+        // FILTER DATA: Hanya ambil item yang benar-benar ARRAY
+        // Ini mencegah error "Trying to access array offset on int"
+        $products = collect($rawProducts)
+            ->filter(fn($item) => is_array($item)) 
+            ->values() 
+            ->toArray();
+
         return view('welcome', compact('products'));
     }
 
     public function getProductDetail($id)
     {
-        $products = collect(require base_path('app/Data/products_data.php'));
+        $rawProducts = include app_path('Data/products_data.php');
+        $products = collect($rawProducts)->filter(fn($item) => is_array($item));
         $product = $products->firstWhere('id', (int)$id);
 
-        if (!$product) {
-            abort(404);
-        }
+        if (!$product) abort(404);
 
         return response()->json($product);
     }

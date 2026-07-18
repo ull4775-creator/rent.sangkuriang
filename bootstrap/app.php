@@ -11,7 +11,6 @@ $isVercel = getenv('VERCEL') === '1'
          || str_contains(getenv('HOME') ?? '', '/var/task');
 
 if ($isVercel) {
-    // Buat struktur folder lengkap di /tmp (writable di Vercel)
     $tmpDirs = [
         '/tmp/storage',
         '/tmp/storage/framework',
@@ -22,13 +21,9 @@ if ($isVercel) {
     ];
     
     foreach ($tmpDirs as $dir) {
-        if (!is_dir($dir)) {
-            @mkdir($dir, 0755, true);
-        }
+        if (!is_dir($dir)) @mkdir($dir, 0755, true);
     }
     
-    // Arahkan Laravel menggunakan /tmp sebagai storage path
-    // PENTING: Harus dilakukan SEBELUM Application::configure()
     $_ENV['LARAVEL_STORAGE_PATH'] = '/tmp/storage';
 }
 

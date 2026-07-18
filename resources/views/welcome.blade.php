@@ -2,262 +2,251 @@
 <html lang="id">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, user-scalable=yes">
     <title>Sangkuriang - Sewa Tenda Premium</title>
-    
-    <!-- LOGO TITLE BROWSER -->
     <link rel="icon" type="image/png" href="{{ asset('assets/images/logo.png') }}">
-    
-    <!-- FONTS & ICONS -->
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
-    
-    <!-- CUSTOM CSS (External) -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
     <link rel="stylesheet" href="{{ asset('css/style.css') }}">
 
     <style>
-        /* =========================================
-           MOBILE FIRST & RESPONSIVE FIX
-           ========================================= */
+        :root { --primary: #4CAF50; --gold: #FFD54F; --dark: #0a0a0a; --glass-bg: rgba(20, 20, 20, 0.75); }
+        * { margin: 0; padding: 0; box-sizing: border-box; scroll-behavior: smooth; }
+        body { font-family: 'Poppins', sans-serif; color: #fff; background: var(--dark); overflow-x: hidden; }
         
-        :root {
-            --primary: #4CAF50;
-            --primary-dark: #2E7D32;
-            --gold: #FFD54F;
-            --glass-bg: rgba(20, 20, 20, 0.7);
-            --glass-border: rgba(255, 255, 255, 0.1);
-        }
-
-        * { margin: 0; padding: 0; box-sizing: border-box; scroll-behavior: smooth; -webkit-tap-highlight-color: transparent; }
-        
-        body { 
-            font-family: 'Poppins', sans-serif; 
-            color: #ffffff; 
-            overflow-x: hidden; 
-            background: transparent; 
-            width: 100%;
-        }
-
-        /* --- VIDEO BACKGROUND FIXED --- */
+        /* BACKGROUND VIDEO DENGAN FALLBACK */
         .fixed-video-bg {
             position: fixed; top: 0; left: 0; width: 100vw; height: 100vh;
             z-index: -9999; pointer-events: none; overflow: hidden;
+            background: #0a0a0a;
+        }
+        .fixed-video-bg img {
+            width: 100%; height: 100%; object-fit: cover; 
+            position: absolute; top: 0; left: 0; z-index: -2;
         }
         .fixed-video-bg video {
-            width: 100%; height: 100%; object-fit: cover; transform: scale(1.1);
+            width: 100%; height: 100%; object-fit: cover; 
+            position: relative; z-index: -1;
         }
-
-        /* Overlay Gelap Global */
         .global-overlay {
             position: fixed; inset: 0;
-            background: rgba(0, 0, 0, 0.65);
+            background: linear-gradient(to bottom, rgba(0,0,0,0.4), rgba(0,0,0,0.8));
             z-index: -9998; pointer-events: none;
         }
-
-        /* --- NAVBAR FLOATING GLASS --- */
-        .navbar {
-            position: fixed; top: 0; left: 0; width: 100%; z-index: 1000;
-            padding: 15px 0; transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
-            background: transparent;
-        }
-        .navbar.scrolled {
-            padding: 10px 0; background: rgba(10, 10, 10, 0.9);
-            backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px);
-            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
-            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
-        }
-        .nav-flex { display: flex; justify-content: space-between; align-items: center; max-width: 1200px; margin: 0 auto; padding: 0 20px; }
-        .logo { font-size: 1.2rem; font-weight: 800; color: white; display: flex; align-items: center; gap: 8px; text-decoration: none; }
-        .logo i { color: var(--primary); font-size: 1.4rem; }
         
-        /* Desktop Menu */
-        .nav-menu { display: flex; gap: 30px; list-style: none; }
-        .nav-menu a { color: rgba(255,255,255,0.8); text-decoration: none; font-weight: 500; transition: 0.3s; }
+        .navbar { position: fixed; top: 0; width: 100%; z-index: 1000; padding: 20px 0; transition: 0.4s; background: transparent; }
+        .navbar.scrolled { background: rgba(10,10,10,0.95); backdrop-filter: blur(20px); padding: 12px 0; border-bottom: 1px solid rgba(255,255,255,0.1); }
+        .nav-flex { display: flex; justify-content: space-between; align-items: center; max-width: 1200px; margin: 0 auto; padding: 0 24px; }
+        .logo { font-size: 1.3rem; font-weight: 800; color: white; text-decoration: none; display: flex; align-items: center; gap: 10px; }
+        .logo i { color: var(--primary); }
+        .nav-menu { display: flex; gap: 32px; list-style: none; }
+        .nav-menu a { color: rgba(255,255,255,0.85); text-decoration: none; font-weight: 500; transition: 0.3s; }
         .nav-menu a:hover, .nav-menu a.active { color: var(--primary); }
-        .btn-nav { background: var(--primary); color: #fff; padding: 8px 20px; border-radius: 50px; font-weight: 600; text-decoration: none; transition: 0.3s; font-size: 0.9rem; }
-        .btn-nav:hover { transform: translateY(-2px); box-shadow: 0 5px 15px rgba(76,175,80,0.4); }
-        
-        /* Hamburger Mobile */
+        .btn-nav { background: var(--primary); color: #fff; padding: 10px 24px; border-radius: 50px; text-decoration: none; font-weight: 600; transition: 0.3s; }
         .hamburger { display: none; cursor: pointer; flex-direction: column; gap: 6px; z-index: 1001; }
-        .hamburger span { width: 25px; height: 2px; background: #fff; transition: 0.3s; }
-        .hamburger.active span:nth-child(1) { transform: rotate(45deg) translate(5px, 6px); }
-        .hamburger.active span:nth-child(2) { opacity: 0; }
-        .hamburger.active span:nth-child(3) { transform: rotate(-45deg) translate(5px, -6px); }
-
-        /* --- HERO SECTION RESPONSIVE --- */
-        .hero-video-section {
-            position: relative; min-height: 100vh; width: 100%;
-            display: flex; align-items: center; justify-content: center; background: transparent;
-            padding: 80px 20px 40px; /* Padding atas buat navbar */
-        }
-        .hero-content-video {
-            position: relative; z-index: 10; text-align: center; color: white;
-            max-width: 1000px; animation: fadeInUp 1s ease-out;
-            text-shadow: 0 4px 20px rgba(0,0,0,0.8); 
-        }
-        .marquee-wrapper {
-            width: 100%; overflow: hidden; margin-bottom: 20px;
-            border-top: 1px solid rgba(255,255,255,0.2); border-bottom: 1px solid rgba(255,255,255,0.2);
-            padding: 10px 0; background: rgba(0,0,0,0.3); backdrop-filter: blur(10px); border-radius: 10px;
-        }
-        .marquee-text { display: inline-block; white-space: nowrap; font-size: clamp(0.7rem, 2vw, 1rem); letter-spacing: 2px; text-transform: uppercase; animation: scrollText 25s linear infinite; }
-        @keyframes scrollText { 0% { transform: translateX(100%); } 100% { transform: translateX(-100%); } }
+        .hamburger span { width: 28px; height: 2.5px; background: #fff; transition: 0.3s; }
         
-        /* Judul Responsif */
-        .main-title { font-size: clamp(2.5rem, 8vw, 5.5rem); font-weight: 800; line-height: 1.1; margin-bottom: 15px; }
-        .highlight-green { color: var(--primary); text-shadow: 0 0 40px rgba(76, 175, 80, 0.6); }
+        .hero-section { min-height: 100vh; display: flex; align-items: center; justify-content: center; text-align: center; padding: 100px 24px; position: relative; }
+        .main-title { font-size: clamp(2.5rem, 8vw, 5rem); font-weight: 800; line-height: 1.1; margin-bottom: 20px; }
+        .highlight { color: var(--primary); text-shadow: 0 0 40px rgba(76,175,80,0.4); }
+        .hero-desc { font-size: 1.1rem; color: rgba(255,255,255,0.9); margin-bottom: 30px; max-width: 600px; margin-left: auto; margin-right: auto; }
+        .btn-glass { background: rgba(255,255,255,0.1); border: 1px solid rgba(255,255,255,0.3); color: white; padding: 14px 32px; border-radius: 50px; text-decoration: none; display: inline-flex; align-items: center; gap: 10px; transition: 0.3s; backdrop-filter: blur(10px); }
+        .btn-glass:hover { background: var(--primary); border-color: var(--primary); transform: translateY(-3px); }
         
-        .hero-desc { font-size: clamp(0.9rem, 2.5vw, 1.2rem); color: rgba(255,255,255,0.95); margin-bottom: 30px; line-height: 1.6; }
+        .section { padding: 80px 0; }
+        .container { max-width: 1200px; margin: 0 auto; padding: 0 24px; }
+        .section-header { text-align: center; margin-bottom: 50px; }
+        .section-label { color: var(--primary); letter-spacing: 3px; font-size: 0.8rem; font-weight: 700; text-transform: uppercase; display: block; margin-bottom: 12px; }
+        .section-title { font-size: 2.5rem; margin-bottom: 16px; }
         
-        .btn-glass-hero {
-            background: rgba(255, 255, 255, 0.1); border: 1px solid rgba(255, 255, 255, 0.4);
-            color: white; padding: 12px 25px; border-radius: 50px; font-weight: 600;
-            backdrop-filter: blur(12px); transition: all 0.3s ease; text-decoration: none; 
-            display: inline-flex; align-items: center; gap: 8px; margin: 5px; font-size: 0.9rem;
+        /* 3D GLASS CARD */
+        .grid-catalog { display: grid; grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); gap: 28px; }
+        .glass-card { 
+            background: var(--glass-bg); border: 1px solid rgba(255,255,255,0.1); 
+            border-radius: 20px; overflow: hidden; transition: 0.4s; 
+            backdrop-filter: blur(15px); 
+            transform-style: preserve-3d; perspective: 1000px;
         }
-        .btn-glass-hero:hover { background: var(--primary); border-color: var(--primary); transform: translateY(-3px); }
-        @keyframes fadeInUp { from { opacity: 0; transform: translateY(40px); } to { opacity: 1; transform: translateY(0); } }
+        .glass-card:hover { 
+            transform: translateY(-8px) rotateX(2deg); 
+            border-color: rgba(76,175,80,0.4); 
+            box-shadow: 0 20px 40px rgba(0,0,0,0.4); 
+        }
+        
+        .product-img { height: 220px; position: relative; overflow: hidden; background: #111; }
+        .product-img img { width: 100%; height: 100%; object-fit: cover; transition: 0.6s; }
+        .glass-card:hover .product-img img { transform: scale(1.1); }
+        .badge-best { position: absolute; top: 14px; left: 14px; background: var(--gold); color: #000; padding: 5px 14px; border-radius: 20px; font-size: 0.7rem; font-weight: 700; z-index: 2; }
+        .badge-price { position: absolute; top: 14px; right: 14px; background: rgba(0,0,0,0.85); color: var(--gold); padding: 6px 14px; border-radius: 20px; font-weight: 700; font-size: 0.85rem; z-index: 2; }
+        
+        .product-body { padding: 24px; }
+        .product-name { font-size: 1.15rem; font-weight: 600; margin-bottom: 10px; }
+        .product-desc { color: #aaa; font-size: 0.9rem; margin-bottom: 20px; line-height: 1.6; display: -webkit-box; -webkit-line-clamp: 3; -webkit-box-orient: vertical; overflow: hidden; }
+        .product-actions { display: flex; gap: 10px; }
+        .btn-detail { flex: 1; padding: 12px; background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.15); color: white; border-radius: 12px; cursor: pointer; font-size: 0.85rem; transition: 0.3s; display: flex; align-items: center; justify-content: center; gap: 6px; }
+        .btn-wa { background: #25D366; color: white; padding: 12px 18px; border-radius: 12px; text-decoration: none; display: flex; align-items: center; gap: 6px; font-size: 0.85rem; font-weight: 600; transition: 0.3s; }
 
-        /* --- GLOBAL GLASS CARD STYLE --- */
-        .section { padding: 60px 0; position: relative; z-index: 1; }
-        .container { max-width: 1200px; margin: 0 auto; padding: 0 20px; }
-        .glass-card {
-            background: var(--glass-bg); border: 1px solid var(--glass-border);
-            backdrop-filter: blur(15px); -webkit-backdrop-filter: blur(15px);
-            border-radius: 16px; transition: 0.3s;
-        }
-        .glass-card:hover { background: rgba(30, 30, 30, 0.8); border-color: rgba(76, 175, 80, 0.3); transform: translateY(-5px); }
+        /* FEATURES & CONTACT GRID */
+        .grid-features, .social-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 24px; margin-top: 30px; }
+        .feature-card, .contact-card { padding: 30px; text-align: center; }
+        .feature-icon { width: 60px; height: 60px; background: linear-gradient(135deg, var(--primary), var(--dark)); border-radius: 16px; display: flex; align-items: center; justify-content: center; margin: 0 auto 15px; font-size: 1.5rem; }
+        .contact-icon { font-size: 2rem; margin-bottom: 10px; display: inline-block; }
+        .contact-link { display: inline-block; margin-top: 10px; padding: 8px 20px; border-radius: 50px; text-decoration: none; font-weight: 600; transition: 0.3s; }
+        .contact-link.wa { background: #25D366; color: white; }
+        .contact-link.phone { border: 1px solid var(--primary); color: var(--primary); }
+        .contact-link.ig { border: 1px solid #E1306C; color: #E1306C; }
 
-        /* --- 3D MAP RESPONSIVE --- */
-        .map-3d-container {
-            position: relative; border-radius: 20px; overflow: hidden;
-            height: 400px; border: 2px solid rgba(76, 175, 80, 0.4);
-            box-shadow: 0 20px 50px rgba(0,0,0,0.5), 0 0 30px rgba(76, 175, 80, 0.15);
-            transition: all 0.4s; cursor: pointer; transform: perspective(1000px) rotateX(2deg);
-            display: block; margin-bottom: 30px;
+        /* 3D MAP CONTAINER */
+        .map-wrapper {
+            position: relative; border-radius: 24px; overflow: hidden;
+            height: 400px; border: 2px solid rgba(76, 175, 80, 0.3);
+            box-shadow: 0 25px 60px rgba(0,0,0,0.6);
+            transition: all 0.4s; cursor: pointer; display: block; margin-bottom: 32px;
+            transform: perspective(1000px) rotateX(2deg);
+            background: #111;
         }
-        .map-3d-container:hover { transform: perspective(1000px) rotateX(0deg) scale(1.02); border-color: var(--primary); }
+        .map-wrapper:hover { 
+            border-color: var(--primary); 
+            transform: perspective(1000px) rotateX(0deg) scale(1.02);
+        }
+        /* Iframe tetap ada sebagai visual background peta */
+        .map-wrapper iframe { width:100%; height:100%; border:0; filter: invert(90%) hue-rotate(180deg) brightness(0.8) contrast(1.2); pointer-events: none; }
+        
+        /* Overlay tombol navigasi di atas peta */
         .map-click-overlay {
-            position: absolute; inset: 0; background: rgba(0,0,0,0.2);
+            position: absolute; inset: 0; background: rgba(0,0,0,0.4);
             display: flex; flex-direction: column; align-items: center; justify-content: center;
-            z-index: 10; transition: 0.3s; pointer-events: none;
+            z-index: 10; transition: 0.4s; backdrop-filter: blur(2px);
         }
-        .map-3d-container:hover .map-click-overlay { background: rgba(0,0,0,0.0); opacity: 0; }
+        .map-wrapper:hover .map-click-overlay { background: rgba(0,0,0,0.1); }
+        
         .map-btn-float {
-            background: rgba(76, 175, 80, 0.9); color: white; padding: 10px 20px;
-            border-radius: 50px; font-weight: 600; backdrop-filter: blur(5px);
-            box-shadow: 0 5px 15px rgba(0,0,0,0.3); animation: pulseMap 2s infinite;
-            display: flex; align-items: center; gap: 8px; font-size: 0.9rem;
+            background: rgba(76, 175, 80, 0.95); color: white; padding: 16px 32px;
+            border-radius: 50px; font-weight: 700; backdrop-filter: blur(5px);
+            box-shadow: 0 8px 25px rgba(0,0,0,0.4); animation: pulseMap 2.5s infinite;
+            display: flex; align-items: center; gap: 10px; font-size: 1.1rem;
+            text-decoration: none; border: 2px solid rgba(255,255,255,0.2);
         }
-        @keyframes pulseMap { 0% { transform: scale(1); box-shadow: 0 0 0 0 rgba(76, 175, 80, 0.7); } 70% { transform: scale(1.05); box-shadow: 0 0 0 15px rgba(76, 175, 80, 0); } 100% { transform: scale(1); box-shadow: 0 0 0 0 rgba(76, 175, 80, 0); } }
+        .map-btn-float:hover { background: var(--primary); transform: scale(1.05); }
+        
+        @keyframes pulseMap { 0% { transform: scale(1); box-shadow: 0 0 0 0 rgba(76, 175, 80, 0.6); } 70% { transform: scale(1.05); box-shadow: 0 0 0 20px rgba(76, 175, 80, 0); } 100% { transform: scale(1); box-shadow: 0 0 0 0 rgba(76, 175, 80, 0); } }
+        
+        /* MODAL DETAIL SPESIFIK */
+        .modal-overlay { display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.92); z-index: 2000; align-items: center; justify-content: center; padding: 20px; backdrop-filter: blur(10px); }
+        .modal-overlay.active { display: flex; animation: fadeIn 0.3s ease; }
+        .modal-content { background: #1a1a1a; border-radius: 24px; max-width: 600px; width: 100%; position: relative; border: 1px solid rgba(255,255,255,0.1); overflow: hidden; max-height: 90vh; overflow-y: auto; }
+        .modal-close { position: absolute; top: 16px; right: 16px; background: rgba(0,0,0,0.6); border: 1px solid rgba(255,255,255,0.2); color: white; width: 36px; height: 36px; border-radius: 50%; cursor: pointer; z-index: 10; display: flex; align-items: center; justify-content: center; }
+        .modal-slider { height: 300px; background: #000; position: relative; }
+        .modal-slider img { width: 100%; height: 100%; object-fit: cover; }
+        .slider-nav { position: absolute; top: 50%; transform: translateY(-50%); background: rgba(0,0,0,0.6); border: 1px solid rgba(255,255,255,0.2); color: white; width: 40px; height: 40px; border-radius: 50%; cursor: pointer; display: flex; align-items: center; justify-content: center; }
+        .slider-prev { left: 12px; } .slider-next { right: 12px; }
+        .slider-dots { position: absolute; bottom: 12px; left: 50%; transform: translateX(-50%); display: flex; gap: 6px; }
+        .slider-dot { width: 8px; height: 8px; border-radius: 50%; background: rgba(255,255,255,0.4); cursor: pointer; }
+        .slider-dot.active { background: var(--primary); width: 24px; border-radius: 4px; }
+        .modal-body { padding: 28px; }
+        .modal-specs { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin: 20px 0; }
+        .spec-item { background: rgba(255,255,255,0.05); padding: 12px; border-radius: 12px; border: 1px solid rgba(255,255,255,0.08); }
+        .spec-label { font-size: 0.75rem; color: #aaa; text-transform: uppercase; letter-spacing: 1px; margin-bottom: 4px; }
+        .spec-value { font-size: 0.95rem; font-weight: 600; }
+        .includes-list { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 10px; }
+        .include-tag { background: rgba(76,175,80,0.1); border: 1px solid rgba(76,175,80,0.3); color: #81C784; padding: 6px 12px; border-radius: 20px; font-size: 0.8rem; }
+        .modal-book-btn { width: 100%; padding: 16px; background: #25D366; color: white; border: none; border-radius: 16px; font-size: 1.05rem; font-weight: 700; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 10px; margin-top: 20px; }
+        
+        /* FOOTER */
+        footer { background: rgba(0,0,0,0.9); backdrop-filter: blur(10px); padding: 40px 0; text-align: center; border-top: 1px solid rgba(255,255,255,0.1); }
+        .footer-logo { color: var(--primary); margin-bottom: 12px; font-size:1.3rem; font-weight:700; display:flex; align-items:center; justify-content:center; gap:8px; }
+        .footer-copy { color: #666; font-size: 0.85rem; transition: 0.3s; display: inline-block; margin-top: 8px; text-decoration: none; }
+        .footer-copy:hover { color: var(--primary); }
 
-        /* --- RESPONSIVE MEDIA QUERIES (MOBILE FIX) --- */
+        @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+        
+        /* RESPONSIVE MOBILE */
         @media(max-width: 768px) {
-            /* Navbar Mobile */
-            .nav-menu {
-                position: fixed; top: 0; right: -100%; width: 80%; max-width: 300px; height: 100vh;
-                background: rgba(5, 5, 5, 0.98); backdrop-filter: blur(20px);
-                flex-direction: column; padding: 100px 30px 30px; transition: 0.4s cubic-bezier(0.4, 0, 0.2, 1);
-                border-left: 1px solid rgba(255,255,255,0.1); z-index: 999;
-                box-shadow: -10px 0 30px rgba(0,0,0,0.5);
-            }
+            .nav-menu { position: fixed; top: 0; right: -100%; width: 80%; height: 100vh; background: #050505; flex-direction: column; padding: 100px 32px; transition: 0.4s; z-index: 999; }
             .nav-menu.active { right: 0; }
             .hamburger { display: flex; }
-            
-            /* Hero Mobile */
-            .hero-video-section { padding-top: 100px; min-height: auto; padding-bottom: 60px; }
-            .main-title { margin-bottom: 15px; }
-            .btn-glass-hero { width: 100%; justify-content: center; margin: 8px 0; padding: 14px; }
-            
-            /* Grid Mobile */
-            .grid-catalog, .grid-features, .social-grid { grid-template-columns: 1fr !important; gap: 20px; }
-            
-            /* Map Mobile */
-            .map-3d-container { height: 280px; transform: none; border-radius: 16px; }
-            .map-3d-container:hover { transform: scale(1.02); }
-            .map-btn-float { font-size: 0.8rem; padding: 8px 16px; }
-            
-            /* Section Spacing */
-            .section { padding: 40px 0; }
-            .section-header h2 { font-size: 1.8rem !important; }
-            
-            /* Modal Mobile */
-            .modal-content { width: 95% !important; padding: 20px !important; }
-            .modal-slider-container { height: 200px !important; }
+            .btn-nav { display: none; }
+            .grid-catalog, .grid-features, .social-grid { grid-template-columns: 1fr; }
+            .modal-specs { grid-template-columns: 1fr; }
+            .map-wrapper { height: 280px; transform: none; border-radius: 16px; }
+            .map-wrapper:hover { transform: scale(1.02); }
+            .map-btn-float { font-size: 0.9rem; padding: 12px 24px; }
         }
     </style>
 </head>
 <body>
 
-    <!-- VIDEO BACKGROUND FIXED -->
+    <!-- VIDEO BACKGROUND DENGAN FALLBACK IMAGE -->
     <div class="fixed-video-bg">
-        <video id="bgVideo" autoplay muted loop playsinline preload="auto" poster="{{ asset('assets/images/logo.png') }}">
+        <img src="{{ asset('assets/images/logo.png') }}" alt="Background" style="width:100%; height:100%; object-fit:cover; position:absolute; top:0; left:0; z-index:-2;">
+        <video id="bgVideo" autoplay muted loop playsinline preload="auto" poster="{{ asset('assets/images/logo.png') }}" style="position:relative; z-index:-1;">
             <source src="{{ asset('uploads/products/bg.mp4') }}" type="video/mp4">
         </video>
     </div>
     <div class="global-overlay"></div>
 
-    <!-- NAVBAR FLOATING GLASS -->
     <nav class="navbar" id="navbar">
         <div class="nav-flex">
-            <a href="#" class="logo"><i class="fas fa-mountain"></i> <span>SANGKURIANG</span></a>
+            <a href="#" class="logo"><i class="fas fa-mountain"></i> SANGKURIANG</a>
             <ul class="nav-menu" id="navMenu">
                 <li><a href="#home" class="active">Home</a></li>
                 <li><a href="#katalog">Katalog</a></li>
                 <li><a href="#keunggulan">Keunggulan</a></li>
-                <li><a href="#kontak">Lokasi</a></li>
+                <!-- PERUBAHAN 1: Menu Lokasi langsung buka Google Maps Baru -->
+                <li><a href="https://maps.app.goo.gl/Pvixba29j8ADjDdo9" target="_blank">Lokasi</a></li>
             </ul>
-            <a href="https://wa.me/6281324481252" target="_blank" class="btn-nav">Hubungi Admin</a>
+            <a href="https://wa.me/6281324481252" target="_blank" class="btn-nav"><i class="fab fa-whatsapp"></i> Hubungi Admin</a>
             <div class="hamburger" id="hamburger"><span></span><span></span><span></span></div>
         </div>
     </nav>
 
-    <!-- HERO SECTION -->
-    <section class="hero-video-section" id="home">
-        <div class="hero-content-video">
-            <div class="marquee-wrapper">
-                <div class="marquee-text">SEWA TENDA FAMILY CAMP &nbsp;&bull;&nbsp; PREMIUM QUALITY &nbsp;&bull;&nbsp; BEST PRICE IN SUBANG &nbsp;&bull;&nbsp; BOOKING SEKARANG</div>
-            </div>
-            <h1 class="main-title">Sewa Tenda <br><span class="highlight-green">Family Camp</span></h1>
+    <section class="hero-section" id="home">
+        <div class="hero-content">
+            <h1 class="main-title">Sewa Tenda <br><span class="highlight">Family Camp</span></h1>
             <p class="hero-desc">Nikmati petualangan keluarga yang tak terlupakan dengan perlengkapan camping premium berkualitas tinggi.</p>
-            <div class="hero-btns">
-                <a href="#katalog" class="btn-glass-hero"><i class="fas fa-list-ul"></i> Lihat Katalog</a>
-                <a href="#kontak" class="btn-glass-hero"><i class="fas fa-map-marker-alt"></i> Cek Lokasi</a>
+            <div style="display:flex; gap:16px; justify-content:center; flex-wrap:wrap;">
+                <a href="#katalog" class="btn-glass"><i class="fas fa-list-ul"></i> Lihat Katalog</a>
+                <!-- PERUBAHAN 2: Tombol Cek Lokasi di Hero juga langsung buka Google Maps Baru -->
+                <a href="https://maps.app.goo.gl/Pvixba29j8ADjDdo9" target="_blank" class="btn-glass" style="background:transparent;"><i class="fas fa-map-marker-alt"></i> Cek Lokasi</a>
             </div>
-        </div>
-        <div style="position: absolute; bottom: 30px; left: 50%; transform: translateX(-50%); z-index: 10; text-align: center; color: rgba(255,255,255,0.8);">
-            <div style="width: 24px; height: 40px; border: 2px solid rgba(255,255,255,0.6); border-radius: 20px; margin: 0 auto 10px; position: relative;">
-                <div style="width: 4px; height: 8px; background: var(--primary); border-radius: 2px; position: absolute; top: 8px; left: 50%; transform: translateX(-50%); animation: scrollMouse 1.5s infinite;"></div>
-            </div>
-            <span style="font-size: 0.7rem; letter-spacing: 3px; text-transform: uppercase;">Scroll Down</span>
         </div>
     </section>
 
-    <!-- KATALOG SECTION -->
     <section class="section" id="katalog">
         <div class="container">
-            <div class="section-header text-center" style="margin-bottom:40px;">
-                <span style="color:var(--primary); letter-spacing:2px; font-size:0.8rem; font-weight:700;">PRODUK UNGGULAN</span>
-                <h2 style="font-size:2rem; margin:10px 0;">Koleksi Tenda Premium</h2>
-                <p style="color:#aaa; font-size:0.9rem;">Pilih perlengkapan terbaik untuk kenyamanan keluarga Anda.</p>
+            <div class="section-header">
+                <span class="section-label">Produk Unggulan</span>
+                <h2 class="section-title">Koleksi Tenda Premium</h2>
             </div>
-            <div class="grid-catalog" style="display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 25px;">
+            
+            <div class="grid-catalog">
                 @foreach($products as $product)
-                    @php $firstImg = !empty($product['images']) ? $product['images'][0] : 'placeholder.jpg'; @endphp
-                    <div class="product-card glass-card" style="overflow:hidden;">
-                        <div class="product-img" style="height: 200px; position: relative; overflow: hidden;">
-                            @if($product['is_best_seller'])
-                                <span style="position:absolute; top:10px; left:10px; background:var(--gold); color:#000; padding:4px 12px; border-radius:20px; font-size:0.65rem; font-weight:700; z-index:2;"><i class="fas fa-crown"></i> BEST SELLER</span>
-                            @endif
-                            <img src="{{ asset('uploads/products/' . $firstImg) }}" alt="{{ $product['name'] }}" loading="lazy" style="width:100%; height:100%; object-fit:cover; transition:0.5s;">
-                            <span style="position:absolute; top:10px; right:10px; background:rgba(0,0,0,0.8); color:var(--gold); padding:4px 12px; border-radius:20px; font-weight:700; font-size:0.8rem; z-index:2;">{{ $product['price'] }}</span>
+                    @if(!is_array($product)) @continue @endif
+                    @php 
+                        $firstImg = !empty($product['images']) ? $product['images'][0] : 'placeholder.jpg'; 
+                        $safeProduct = [
+                            'id' => $product['id'] ?? 0, 'name' => $product['name'] ?? 'Produk',
+                            'price' => $product['price'] ?? '-', 'description' => $product['description'] ?? '',
+                            'images' => is_array($product['images']) ? $product['images'] : [],
+                            'specs' => is_array($product['specs']) ? $product['specs'] : [],
+                            'includes' => is_array($product['includes']) ? $product['includes'] : [],
+                            'is_best_seller' => $product['is_best_seller'] ?? false
+                        ];
+                        $waText = urlencode("Halo Admin Sangkuriang, saya ingin booking " . ($product['name'] ?? '') . ". Apakah masih tersedia?");
+                    @endphp
+                    
+                    <div class="glass-card">
+                        <div class="product-img">
+                            @if(!empty($product['is_best_seller'])) <span class="badge-best"><i class="fas fa-crown"></i> BEST SELLER</span> @endif
+                            <img src="{{ asset('uploads/products/' . $firstImg) }}" alt="{{ $product['name'] ?? 'Produk' }}" loading="lazy" onerror="this.src='{{ asset('assets/images/placeholder.jpg') }}'">
+                            <span class="badge-price">{{ $product['price'] ?? '-' }}</span>
                         </div>
-                        <div class="product-body" style="padding: 20px;">
-                            <h3 style="margin-bottom:8px; font-size:1.1rem;">{{ $product['name'] }}</h3>
-                            <p style="color:#aaa; font-size:0.85rem; margin-bottom:15px; line-height:1.5;">{{ Str::limit($product['description'], 70) }}</p>
-                            <div style="display:flex; gap:8px;">
-                                <button onclick='openModal(@json($product))' style="flex:1; padding:10px; background:rgba(255,255,255,0.05); border:1px solid rgba(255,255,255,0.1); color:white; border-radius:8px; cursor:pointer; font-size:0.8rem;"><i class="fas fa-images"></i> Detail</button>
-                                <a href="https://wa.me/6281324481252?text=Booking {{ urlencode($product['name']) }}" target="_blank" style="background:#25D366; color:white; padding:10px 15px; border-radius:8px; text-decoration:none; display:flex; align-items:center; gap:5px; font-size:0.8rem;"><i class="fab fa-whatsapp"></i> Booking</a>
+                        <div class="product-body">
+                            <h3 class="product-name">{{ $product['name'] ?? 'Nama Produk' }}</h3>
+                            <p class="product-desc">{{ Str::limit($product['description'] ?? '', 80) }}</p>
+                            <div class="product-actions">
+                                <button onclick='openModal(@json($safeProduct))' class="btn-detail"><i class="fas fa-images"></i> Detail</button>
+                                <a href="https://wa.me/6281324481252?text={{ $waText }}" target="_blank" class="btn-wa"><i class="fab fa-whatsapp"></i> Booking</a>
                             </div>
                         </div>
                     </div>
@@ -269,127 +258,154 @@
     <!-- KEUNGGULAN SECTION -->
     <section class="section" id="keunggulan">
         <div class="container">
-            <div class="section-header text-center" style="margin-bottom:40px;">
-                <span style="color:var(--primary); letter-spacing:2px; font-size:0.8rem; font-weight:700;">MENGAPA MEMILIH KAMI?</span>
-                <h2 style="font-size:2rem; margin:10px 0;">Keunggulan Sangkuriang</h2>
+            <div class="section-header">
+                <span class="section-label">Mengapa Memilih Kami?</span>
+                <h2 class="section-title">Keunggulan Sangkuriang</h2>
             </div>
-            <div class="grid-features" style="display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 20px;">
-                <div class="glass-card" style="padding: 30px 20px; text-align: center;">
-                    <div style="width:50px; height:50px; background:linear-gradient(135deg, var(--primary), #2E7D32); border-radius:12px; display:flex; align-items:center; justify-content:center; margin:0 auto 15px; font-size:1.3rem; color:white;"><i class="fas fa-shield-alt"></i></div>
-                    <h3 style="font-size:1.1rem; margin-bottom:8px;">Kualitas Terjamin</h3><p style="color:#aaa; font-size:0.85rem;">Sterilisasi & pengecekan ketat setiap selesai sewa.</p>
+            <div class="grid-features">
+                <div class="glass-card feature-card">
+                    <div class="feature-icon"><i class="fas fa-shield-alt"></i></div>
+                    <h3>Kualitas Terjamin</h3>
+                    <p style="color:#aaa; font-size:0.9rem;">Sterilisasi & pengecekan ketat setiap selesai sewa.</p>
                 </div>
-                <div class="glass-card" style="padding: 30px 20px; text-align: center;">
-                    <div style="width:50px; height:50px; background:linear-gradient(135deg, var(--primary), #2E7D32); border-radius:12px; display:flex; align-items:center; justify-content:center; margin:0 auto 15px; font-size:1.3rem; color:white;"><i class="fas fa-headset"></i></div>
-                    <h3 style="font-size:1.1rem; margin-bottom:8px;">Support 24/7</h3><p style="color:#aaa; font-size:0.85rem;">Tim siap bantu instalasi & kendala teknis kapan saja.</p>
+                <div class="glass-card feature-card">
+                    <div class="feature-icon"><i class="fas fa-headset"></i></div>
+                    <h3>Support 24/7</h3>
+                    <p style="color:#aaa; font-size:0.9rem;">Tim siap bantu instalasi & kendala teknis kapan saja.</p>
                 </div>
-                <div class="glass-card" style="padding: 30px 20px; text-align: center;">
-                    <div style="width:50px; height:50px; background:linear-gradient(135deg, var(--primary), #2E7D32); border-radius:12px; display:flex; align-items:center; justify-content:center; margin:0 auto 15px; font-size:1.3rem; color:white;"><i class="fas fa-tags"></i></div>
-                    <h3 style="font-size:1.1rem; margin-bottom:8px;">Harga Transparan</h3><p style="color:#aaa; font-size:0.85rem;">Tanpa biaya tersembunyi, paket all-in essentials.</p>
+                <div class="glass-card feature-card">
+                    <div class="feature-icon"><i class="fas fa-tags"></i></div>
+                    <h3>Harga Transparan</h3>
+                    <p style="color:#aaa; font-size:0.9rem;">Tanpa biaya tersembunyi, paket all-in essentials.</p>
                 </div>
-                <div class="glass-card" style="padding: 30px 20px; text-align: center;">
-                    <div style="width:50px; height:50px; background:linear-gradient(135deg, var(--primary), #2E7D32); border-radius:12px; display:flex; align-items:center; justify-content:center; margin:0 auto 15px; font-size:1.3rem; color:white;"><i class="fas fa-map-marker-alt"></i></div>
-                    <h3 style="font-size:1.1rem; margin-bottom:8px;">Lokasi Terbaik</h3><p style="color:#aaa; font-size:0.85rem;">Mitra area camping terbaik di Subang & sekitarnya.</p>
+                <div class="glass-card feature-card">
+                    <div class="feature-icon"><i class="fas fa-map-marker-alt"></i></div>
+                    <h3>Lokasi Terbaik</h3>
+                    <p style="color:#aaa; font-size:0.9rem;">Mitra area camping terbaik di Subang & sekitarnya.</p>
                 </div>
             </div>
         </div>
     </section>
 
-    <!-- SECTION LOKASI & 3D MAP -->
+    <!-- LOKASI & KONTAK SECTION -->
     <section class="section" id="kontak">
         <div class="container">
-            <div class="section-header text-center" style="margin-bottom:40px;">
-                <span style="color:var(--primary); letter-spacing:2px; font-size:0.8rem; font-weight:700;">TEMUKAN KAMI</span>
-                <h2 style="font-size:2rem; margin:10px 0;">Lokasi Basecamp Sangkuriang</h2>
-                <p style="color:#aaa; max-width:600px; margin: 0 auto; font-size:0.9rem;">Klik peta di bawah untuk langsung membuka navigasi Google Maps ke lokasi kami.</p>
+            <div class="section-header">
+                <span class="section-label">Temukan Kami</span>
+                <h2 class="section-title">Lokasi Basecamp Sangkuriang</h2>
+                <p style="color:#aaa;">Klik tombol di bawah untuk langsung membuka navigasi Google Maps.</p>
             </div>
             
-            <div style="margin-top: 30px;">
-                <!-- 3D INTERACTIVE MAP WRAPPER -->
-                <a href="https://maps.app.goo.gl/FUEFtybG71BiThAz7" target="_blank" class="map-3d-container">
-                    <iframe 
-                        src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3963.588888888889!2d107.635!3d-6.785!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x2e688c0c0c0c0c0c%3A0x0!2zNsKwNDcnMDYuMCJTIDEwN8KwMzgnMDYuMCJF!5e0!3m2!1sid!2sid!4v1700000000000" 
-                        allowfullscreen="" loading="lazy" style="width:100%; height:100%; border:0; filter: invert(90%) hue-rotate(180deg) brightness(0.8) contrast(1.2);" referrerpolicy="no-referrer-when-downgrade">
-                    </iframe>
-                    <div class="map-click-overlay">
-                        <div class="map-btn-float"><i class="fas fa-location-arrow"></i> KLIK UNTUK NAVIGASI</div>
-                    </div>
-                </a>
+            <!-- PERUBAHAN UTAMA: Wrapper Peta dengan Link Navigasi Langsung -->
+            <a href="https://maps.app.goo.gl/Pvixba29j8ADjDdo9" target="_blank" class="map-wrapper">
+                <!-- Iframe tetap digunakan sebagai background visual peta area Cikole -->
+                <iframe src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d31735.58888888889!2d107.62!3d-6.79!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x2e688c0c0c0c0c0c%3A0x0!2zNsKwNDcnMDAuMCJTIDEwN8KwMzcnMDAuMCJF!5e0!3m2!1sid!2sid!4v1700000000000" allowfullscreen="" loading="lazy" referrerpolicy="no-referrer-when-downgrade"></iframe>
+                
+                <div class="map-click-overlay">
+                    <div class="map-btn-float"><i class="fas fa-location-arrow"></i> BUKA DI GOOGLE MAPS</div>
+                </div>
+            </a>
 
-                <!-- INFO KONTAK DI BAWAH MAP -->
-                <div class="social-grid" style="display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 15px;">
-                    <div class="glass-card" style="padding: 20px; text-align: center;">
-                        <i class="fab fa-whatsapp" style="font-size: 1.8rem; color: #25D366; margin-bottom: 10px;"></i>
-                        <h4 style="font-size:1rem; margin-bottom:5px;">WhatsApp Admin</h4>
-                        <a href="https://wa.me/6281324481252" style="display:inline-block; margin-top:8px; background:#25D366; color:white; padding:8px 18px; border-radius:20px; text-decoration:none; font-size:0.85rem;">Chat Sekarang</a>
-                    </div>
-                    <div class="glass-card" style="padding: 20px; text-align: center;">
-                        <i class="fas fa-phone-alt" style="font-size: 1.8rem; color: var(--primary); margin-bottom: 10px;"></i>
-                        <h4 style="font-size:1rem; margin-bottom:5px;">Telepon Langsung</h4>
-                        <a href="tel:081324481252" style="color: var(--primary); font-weight: bold; font-size: 1rem; display:block; margin-top:8px;">081-324-481-252</a>
-                    </div>
-                    <div class="glass-card" style="padding: 20px; text-align: center;">
-                        <i class="fab fa-instagram" style="font-size: 1.8rem; color: #E1306C; margin-bottom: 10px;"></i>
-                        <h4 style="font-size:1rem; margin-bottom:5px;">Instagram</h4>
-                        <a href="https://www.instagram.com/sewa_tenda_camp_ciater_subang?igsh=ejd4bTdud3QzNDJu" target="_blank" style="color: #E1306C; font-weight: bold; font-size: 0.9rem; display:block; margin-top:8px;">@sewa_tenda_camp_ciater_subang</a>
-                    </div>
+            <div class="social-grid">
+                <div class="glass-card contact-card">
+                    <i class="fab fa-whatsapp contact-icon" style="color: #25D366;"></i>
+                    <h4>WhatsApp Admin</h4>
+                    <a href="https://wa.me/6281324481252" target="_blank" class="contact-link wa"><i class="fab fa-whatsapp"></i> Chat Sekarang</a>
+                </div>
+                <div class="glass-card contact-card">
+                    <i class="fas fa-phone-alt contact-icon" style="color: var(--primary);"></i>
+                    <h4>Telepon Langsung</h4>
+                    <a href="tel:081324481252" class="contact-link phone"><i class="fas fa-phone"></i> 081-324-481-252</a>
+                </div>
+                <div class="glass-card contact-card">
+                    <i class="fab fa-instagram contact-icon" style="color: #E1306C;"></i>
+                    <h4>Instagram</h4>
+                    <!-- PERUBAHAN 3: Link Instagram Profil Sesuai Permintaan -->
+                    <a href="https://www.instagram.com/sewa_tenda_camp_ciater_subang?igsh=ejd4bTdud3QzNDJu" target="_blank" class="contact-link ig"><i class="fab fa-instagram"></i> Follow Us</a>
                 </div>
             </div>
         </div>
     </section>
 
-    <!-- FOOTER (GLASS) -->
-    <footer style="background: rgba(0,0,0,0.8); backdrop-filter: blur(10px); padding: 30px 0; text-align: center; border-top: 1px solid rgba(255,255,255,0.1); position: relative; z-index: 1;">
+    <!-- FOOTER -->
+    <footer>
         <div class="container">
-            <h3 style="color: var(--primary); margin-bottom: 8px; font-size:1.2rem;"><i class="fas fa-mountain"></i> Sangkuriang</h3>
-            <a href="https://maps.app.goo.gl/Mjfhnvq9FZZ1v5Ly6" target="_blank" rel="noopener noreferrer" style="color: #666; font-size: 0.8rem; text-decoration: none; cursor: pointer; display: inline-block;">
-    &copy; Bengkel Komputer 2. All rights reserved.
-</a>
-            <!-- <a href="https://www.instagram.com/sewa_tenda_camp_ciater_subang?igsh=ejd4bTdud3QzNDJu" target="_blank" style="color: #E1306C; margin-top: 10px; display: inline-block; font-size:0.9rem;"><i class="fab fa-instagram"></i> Follow Us</a> -->
+            <div class="footer-logo"><i class="fas fa-mountain"></i> Sangkuriang</div>
+            <!-- PERUBAHAN 4: Footer All Reserved Bengkel Komputer 2 yang bisa diklik ke Maps Lama -->
+            <a href="https://maps.app.goo.gl/Mjfhnvq9FZZ1v5Ly6" target="_blank" rel="noopener noreferrer" class="footer-copy">
+                &copy; Bengkel Komputer 2. All rights reserved.
+            </a>
         </div>
     </footer>
 
     <!-- MODAL DETAIL -->
-    <div class="modal-overlay" id="productModal" style="display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.9); z-index: 2000; align-items: center; justify-content: center; padding:20px;">
-        <div class="modal-content" onclick="event.stopPropagation()" style="background: #1a1a1a; padding: 25px; border-radius: 15px; max-width: 500px; width: 95%; position: relative; border:1px solid rgba(255,255,255,0.1);">
-            <button onclick="closeModal()" style="position: absolute; top: 15px; right: 15px; background: none; border: none; color: white; font-size: 1.5rem; cursor: pointer;"><i class="fas fa-times"></i></button>
-            <div style="position: relative; height: 250px; background: #000; border-radius: 10px; overflow: hidden; margin-bottom: 20px;">
-                <div id="modalSlider" style="display: flex; height: 100%; transition: transform 0.5s;"></div>
-                <button onclick="changeSlide(-1)" style="position: absolute; left: 10px; top: 50%; transform: translateY(-50%); background: rgba(0,0,0,0.5); border: none; color: white; padding: 8px; border-radius: 50%; cursor: pointer;"><i class="fas fa-chevron-left"></i></button>
-                <button onclick="changeSlide(1)" style="position: absolute; right: 10px; top: 50%; transform: translateY(-50%); background: rgba(0,0,0,0.5); border: none; color: white; padding: 8px; border-radius: 50%; cursor: pointer;"><i class="fas fa-chevron-right"></i></button>
+    <div class="modal-overlay" id="productModal">
+        <div class="modal-content" onclick="event.stopPropagation()">
+            <button onclick="closeModal()" class="modal-close"><i class="fas fa-times"></i></button>
+            <div class="modal-slider" id="modalSlider">
+                <img id="modalMainImg" src="" alt="Product">
+                <button onclick="changeSlide(-1)" class="slider-nav slider-prev"><i class="fas fa-chevron-left"></i></button>
+                <button onclick="changeSlide(1)" class="slider-nav slider-next"><i class="fas fa-chevron-right"></i></button>
+                <div class="slider-dots" id="sliderDots"></div>
             </div>
-            <div id="modalBody"></div>
+            <div class="modal-body">
+                <h2 id="modalName" style="font-size:1.4rem; margin-bottom:8px;"></h2>
+                <div style="font-size:1.3rem; color:var(--gold); font-weight:700; margin-bottom:16px;" id="modalPrice"></div>
+                <p id="modalDesc" style="color:#aaa; line-height:1.7; margin-bottom:20px;"></p>
+                
+                <h4 style="font-size:0.9rem; color:var(--primary); margin-bottom:12px;"><i class="fas fa-cog"></i> Spesifikasi:</h4>
+                <div class="modal-specs" id="modalSpecs"></div>
+                
+                <h4 style="font-size:0.9rem; color:var(--primary); margin-bottom:12px;"><i class="fas fa-check-circle"></i> Termasuk dalam Paket:</h4>
+                <div class="includes-list" id="includesList"></div>
+                
+                <a id="modalBookBtn" href="#" target="_blank" class="modal-book-btn"><i class="fab fa-whatsapp"></i> Booking Sekarang</a>
+            </div>
         </div>
     </div>
 
-    <!-- FLOATING WA -->
-    <a href="https://wa.me/6281324481252" target="_blank" style="position: fixed; bottom: 20px; right: 20px; width: 55px; height: 55px; background: #25D366; border-radius: 50%; display: flex; align-items: center; justify-content: center; color: white; font-size: 1.8rem; box-shadow: 0 5px 20px rgba(37,211,102,0.4); z-index: 999; text-decoration:none;">
+    <a href="https://wa.me/6281324481252" target="_blank" style="position:fixed; bottom:24px; right:24px; width:60px; height:60px; background:#25D366; border-radius:50%; display:flex; align-items:center; justify-content:center; color:white; font-size:2rem; box-shadow:0 8px 25px rgba(37,211,102,0.4); z-index:999; text-decoration:none;">
         <i class="fab fa-whatsapp"></i>
     </a>
 
-    <!-- SCRIPTS -->
-    <script src="{{ asset('js/script.js') }}"></script>
     <script>
-        // Navbar Floating Effect Logic
-        window.addEventListener('scroll', () => {
-            const nav = document.getElementById('navbar');
-            if(window.scrollY > 50) nav.classList.add('scrolled');
-            else nav.classList.remove('scrolled');
-        });
-
-        // Mobile Menu Toggle
-        const hamburger = document.getElementById('hamburger');
-        const navMenu = document.getElementById('navMenu');
-        hamburger.addEventListener('click', () => {
-            hamburger.classList.toggle('active');
-            navMenu.classList.toggle('active');
-        });
-
-        // Close menu when clicking link
-        document.querySelectorAll('.nav-menu a').forEach(link => {
-            link.addEventListener('click', () => {
-                hamburger.classList.remove('active');
-                navMenu.classList.remove('active');
-            });
+        window.addEventListener('scroll', () => document.getElementById('navbar').classList.toggle('scrolled', window.scrollY > 50));
+        const hamburger = document.getElementById('hamburger'), navMenu = document.getElementById('navMenu');
+        hamburger.addEventListener('click', () => { hamburger.classList.toggle('active'); navMenu.classList.toggle('active'); });
+        
+        let currentSlide = 0, productImages = [];
+        function openModal(product) {
+            if (!product || typeof product !== 'object') return;
+            productImages = (Array.isArray(product.images) && product.images.length) ? product.images.map(img => `{{ asset('uploads/products/') }}/${img}`) : ['{{ asset('assets/images/placeholder.jpg') }}'];
+            currentSlide = 0; updateSlider();
+            
+            document.getElementById('modalName').textContent = product.name || 'Produk';
+            document.getElementById('modalPrice').textContent = product.price || '-';
+            document.getElementById('modalDesc').textContent = product.description || 'Deskripsi tidak tersedia.';
+            
+            document.getElementById('modalSpecs').innerHTML = Object.entries(product.specs || {}).map(([k,v]) => `<div class="spec-item"><div class="spec-label">${k}</div><div class="spec-value">${v}</div></div>`).join('') || '<p style="color:#aaa">Tidak ada spesifikasi.</p>';
+            document.getElementById('includesList').innerHTML = (Array.isArray(product.includes) ? product.includes : []).map(item => `<span class="include-tag"><i class="fas fa-check"></i> ${item}</span>`).join('') || '<p style="color:#aaa">Tidak ada item tambahan.</p>';
+            document.getElementById('sliderDots').innerHTML = productImages.map((_, i) => `<div class="slider-dot ${i===0?'active':''}" onclick="goToSlide(${i})"></div>`).join('');
+            document.getElementById('modalBookBtn').href = `https://wa.me/6281324481252?text=${encodeURIComponent(`Halo Admin, saya ingin booking ${product.name} (${product.price}).`)}`;
+            
+            document.getElementById('productModal').classList.add('active');
+            document.body.style.overflow = 'hidden';
+        }
+        
+        function closeModal() { document.getElementById('productModal').classList.remove('active'); document.body.style.overflow = ''; }
+        function updateSlider() { 
+            document.getElementById('modalMainImg').src = productImages[currentSlide]; 
+            document.querySelectorAll('.slider-dot').forEach((d,i) => d.classList.toggle('active', i===currentSlide)); 
+        }
+        function changeSlide(dir) { currentSlide = (currentSlide + dir + productImages.length) % productImages.length; updateSlider(); }
+        function goToSlide(idx) { currentSlide = idx; updateSlider(); }
+        
+        document.getElementById('productModal').addEventListener('click', e => { if(e.target.id==='productModal') closeModal(); });
+        document.addEventListener('keydown', e => {
+            if(!document.getElementById('productModal').classList.contains('active')) return;
+            if(e.key==='Escape') closeModal();
+            if(e.key==='ArrowLeft') changeSlide(-1);
+            if(e.key==='ArrowRight') changeSlide(1);
         });
 
         // Video Auto-Play Fix
@@ -397,46 +413,11 @@
             var video = document.getElementById('bgVideo');
             if(video) {
                 video.play().catch(function(error) {
-                    var source = video.querySelector('source');
-                    var src = source.src;
-                    source.src = ''; 
-                    setTimeout(function(){ source.src = src; video.load(); video.play(); }, 100);
+                    video.muted = true;
+                    video.play().catch(function(e) { console.log("Fallback image active"); });
                 });
             }
         });
-
-        // Modal Logic
-        function openModal(product) {
-            const modal = document.getElementById('productModal');
-            const slider = document.getElementById('modalSlider');
-            const body = document.getElementById('modalBody');
-            slider.innerHTML = ''; slider.style.transform = 'translateX(0)';
-            
-            if(product.images && product.images.length > 0) {
-                product.images.forEach(img => {
-                    slider.innerHTML += `<img src="{{ asset('uploads/products/') }}/${img}" style="min-width:100%; height:100%; object-fit:cover;">`;
-                });
-            } else {
-                slider.innerHTML = `<img src="{{ asset('assets/images/placeholder.jpg') }}" style="min-width:100%; height:100%; object-fit:cover;">`;
-            }
-
-            body.innerHTML = `
-                <h2 style="margin-bottom:10px; font-size:1.3rem;">${product.name}</h2>
-                <p style="color:#aaa; margin-bottom:20px; font-size:0.9rem; line-height:1.6;">${product.description}</p>
-                <div style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:10px;">
-                    <span style="font-size:1.3rem; color:#FFD54F; font-weight:bold;">${product.price}</span>
-                    <a href="https://wa.me/6281324481252?text=Booking ${product.name}" target="_blank" style="background:#25D366; color:white; padding:10px 20px; border-radius:20px; text-decoration:none; font-size:0.9rem;">Booking Now</a>
-                </div>`;
-            modal.style.display = 'flex';
-        }
-        function closeModal() { document.getElementById('productModal').style.display = 'none'; }
-        let currentSlide = 0;
-        function changeSlide(direction) {
-            const slider = document.getElementById('modalSlider');
-            const totalSlides = slider.children.length;
-            currentSlide = (currentSlide + direction + totalSlides) % totalSlides;
-            slider.style.transform = `translateX(-${currentSlide * 100}%)`;
-        }
     </script>
 </body>
 </html>
