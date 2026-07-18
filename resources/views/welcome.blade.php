@@ -4,6 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, user-scalable=yes">
     <title>Sangkuriang - Sewa Tenda Premium</title>
+    <!-- PERBAIKAN PATH: Pastikan nama file di folder public/assets/images/ adalah logo.png (huruf kecil semua) -->
     <link rel="icon" type="image/png" href="{{ asset('assets/images/logo.png') }}">
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
@@ -14,15 +15,19 @@
         * { margin: 0; padding: 0; box-sizing: border-box; scroll-behavior: smooth; }
         body { font-family: 'Poppins', sans-serif; color: #fff; background: var(--dark); overflow-x: hidden; }
         
-        /* BACKGROUND VIDEO DENGAN FALLBACK */
+        /* BACKGROUND VIDEO DENGAN FALLBACK IMAGE YANG LEBIH AMAN */
         .fixed-video-bg {
             position: fixed; top: 0; left: 0; width: 100vw; height: 100vh;
             z-index: -9999; pointer-events: none; overflow: hidden;
-            background: #0a0a0a;
+            background-color: #050505; /* Warna dasar gelap */
+            background-image: url('{{ asset("assets/images/logo.png") }}'); /* Fallback image via CSS */
+            background-size: cover;
+            background-position: center;
         }
         .fixed-video-bg img {
             width: 100%; height: 100%; object-fit: cover; 
             position: absolute; top: 0; left: 0; z-index: -2;
+            opacity: 0.5; /* Dibuat agak transparan agar tidak terlalu dominan jika video gagal */
         }
         .fixed-video-bg video {
             width: 100%; height: 100%; object-fit: cover; 
@@ -30,7 +35,7 @@
         }
         .global-overlay {
             position: fixed; inset: 0;
-            background: linear-gradient(to bottom, rgba(0,0,0,0.4), rgba(0,0,0,0.8));
+            background: linear-gradient(to bottom, rgba(0,0,0,0.6), rgba(0,0,0,0.9));
             z-index: -9998; pointer-events: none;
         }
         
@@ -109,10 +114,8 @@
             border-color: var(--primary); 
             transform: perspective(1000px) rotateX(0deg) scale(1.02);
         }
-        /* Iframe tetap ada sebagai visual background peta */
         .map-wrapper iframe { width:100%; height:100%; border:0; filter: invert(90%) hue-rotate(180deg) brightness(0.8) contrast(1.2); pointer-events: none; }
         
-        /* Overlay tombol navigasi di atas peta */
         .map-click-overlay {
             position: absolute; inset: 0; background: rgba(0,0,0,0.4);
             display: flex; flex-direction: column; align-items: center; justify-content: center;
@@ -127,8 +130,6 @@
             display: flex; align-items: center; gap: 10px; font-size: 1.1rem;
             text-decoration: none; border: 2px solid rgba(255,255,255,0.2);
         }
-        .map-btn-float:hover { background: var(--primary); transform: scale(1.05); }
-        
         @keyframes pulseMap { 0% { transform: scale(1); box-shadow: 0 0 0 0 rgba(76, 175, 80, 0.6); } 70% { transform: scale(1.05); box-shadow: 0 0 0 20px rgba(76, 175, 80, 0); } 100% { transform: scale(1); box-shadow: 0 0 0 0 rgba(76, 175, 80, 0); } }
         
         /* MODAL DETAIL SPESIFIK */
@@ -176,9 +177,11 @@
 </head>
 <body>
 
-    <!-- VIDEO BACKGROUND DENGAN FALLBACK IMAGE -->
+    <!-- VIDEO BACKGROUND DENGAN FALLBACK IMAGE GANDA (CSS + HTML) -->
     <div class="fixed-video-bg">
+        <!-- Fallback Image HTML -->
         <img src="{{ asset('assets/images/logo.png') }}" alt="Background" style="width:100%; height:100%; object-fit:cover; position:absolute; top:0; left:0; z-index:-2;">
+        <!-- Video Background -->
         <video id="bgVideo" autoplay muted loop playsinline preload="auto" poster="{{ asset('assets/images/logo.png') }}" style="position:relative; z-index:-1;">
             <source src="{{ asset('uploads/products/bg.mp4') }}" type="video/mp4">
         </video>
@@ -192,7 +195,6 @@
                 <li><a href="#home" class="active">Home</a></li>
                 <li><a href="#katalog">Katalog</a></li>
                 <li><a href="#keunggulan">Keunggulan</a></li>
-                <!-- PERUBAHAN 1: Menu Lokasi langsung buka Google Maps Baru -->
                 <li><a href="https://maps.app.goo.gl/Pvixba29j8ADjDdo9" target="_blank">Lokasi</a></li>
             </ul>
             <a href="https://wa.me/6281324481252" target="_blank" class="btn-nav"><i class="fab fa-whatsapp"></i> Hubungi Admin</a>
@@ -206,7 +208,6 @@
             <p class="hero-desc">Nikmati petualangan keluarga yang tak terlupakan dengan perlengkapan camping premium berkualitas tinggi.</p>
             <div style="display:flex; gap:16px; justify-content:center; flex-wrap:wrap;">
                 <a href="#katalog" class="btn-glass"><i class="fas fa-list-ul"></i> Lihat Katalog</a>
-                <!-- PERUBAHAN 2: Tombol Cek Lokasi di Hero juga langsung buka Google Maps Baru -->
                 <a href="https://maps.app.goo.gl/Pvixba29j8ADjDdo9" target="_blank" class="btn-glass" style="background:transparent;"><i class="fas fa-map-marker-alt"></i> Cek Lokasi</a>
             </div>
         </div>
@@ -223,11 +224,12 @@
                 @foreach($products as $product)
                     @if(!is_array($product)) @continue @endif
                     @php 
-                        $firstImg = !empty($product['images']) ? $product['images'][0] : 'placeholder.jpg'; 
+                        // PERBAIKAN PATH GAMBAR PRODUK: Pastikan nama file di folder public/uploads/products/ huruf kecil semua
+                        $firstImg = !empty($product['images']) ? strtolower($product['images'][0]) : 'placeholder.jpg'; 
                         $safeProduct = [
                             'id' => $product['id'] ?? 0, 'name' => $product['name'] ?? 'Produk',
                             'price' => $product['price'] ?? '-', 'description' => $product['description'] ?? '',
-                            'images' => is_array($product['images']) ? $product['images'] : [],
+                            'images' => is_array($product['images']) ? array_map('strtolower', $product['images']) : [],
                             'specs' => is_array($product['specs']) ? $product['specs'] : [],
                             'includes' => is_array($product['includes']) ? $product['includes'] : [],
                             'is_best_seller' => $product['is_best_seller'] ?? false
@@ -238,7 +240,8 @@
                     <div class="glass-card">
                         <div class="product-img">
                             @if(!empty($product['is_best_seller'])) <span class="badge-best"><i class="fas fa-crown"></i> BEST SELLER</span> @endif
-                            <img src="{{ asset('uploads/products/' . $firstImg) }}" alt="{{ $product['name'] ?? 'Produk' }}" loading="lazy" onerror="this.src='{{ asset('assets/images/placeholder.jpg') }}'">
+                            <!-- onerror akan menampilkan placeholder jika gambar utama tidak ditemukan -->
+                            <img src="{{ asset('uploads/products/' . $firstImg) }}" alt="{{ $product['name'] ?? 'Produk' }}" loading="lazy" onerror="this.onerror=null; this.src='{{ asset('assets/images/placeholder.jpg') }}';">
                             <span class="badge-price">{{ $product['price'] ?? '-' }}</span>
                         </div>
                         <div class="product-body">
@@ -296,11 +299,8 @@
                 <p style="color:#aaa;">Klik tombol di bawah untuk langsung membuka navigasi Google Maps.</p>
             </div>
             
-            <!-- PERUBAHAN UTAMA: Wrapper Peta dengan Link Navigasi Langsung -->
             <a href="https://maps.app.goo.gl/Pvixba29j8ADjDdo9" target="_blank" class="map-wrapper">
-                <!-- Iframe tetap digunakan sebagai background visual peta area Cikole -->
                 <iframe src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d31735.58888888889!2d107.62!3d-6.79!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x2e688c0c0c0c0c0c%3A0x0!2zNsKwNDcnMDAuMCJTIDEwN8KwMzcnMDAuMCJF!5e0!3m2!1sid!2sid!4v1700000000000" allowfullscreen="" loading="lazy" referrerpolicy="no-referrer-when-downgrade"></iframe>
-                
                 <div class="map-click-overlay">
                     <div class="map-btn-float"><i class="fas fa-location-arrow"></i> BUKA DI GOOGLE MAPS</div>
                 </div>
@@ -320,7 +320,6 @@
                 <div class="glass-card contact-card">
                     <i class="fab fa-instagram contact-icon" style="color: #E1306C;"></i>
                     <h4>Instagram</h4>
-                    <!-- PERUBAHAN 3: Link Instagram Profil Sesuai Permintaan -->
                     <a href="https://www.instagram.com/sewa_tenda_camp_ciater_subang?igsh=ejd4bTdud3QzNDJu" target="_blank" class="contact-link ig"><i class="fab fa-instagram"></i> Follow Us</a>
                 </div>
             </div>
@@ -331,7 +330,6 @@
     <footer>
         <div class="container">
             <div class="footer-logo"><i class="fas fa-mountain"></i> Sangkuriang</div>
-            <!-- PERUBAHAN 4: Footer All Reserved Bengkel Komputer 2 yang bisa diklik ke Maps Lama -->
             <a href="https://maps.app.goo.gl/Mjfhnvq9FZZ1v5Ly6" target="_blank" rel="noopener noreferrer" class="footer-copy">
                 &copy; Bengkel Komputer 2. All rights reserved.
             </a>
@@ -376,6 +374,7 @@
         let currentSlide = 0, productImages = [];
         function openModal(product) {
             if (!product || typeof product !== 'object') return;
+            // Path gambar modal juga diubah menjadi lowercase
             productImages = (Array.isArray(product.images) && product.images.length) ? product.images.map(img => `{{ asset('uploads/products/') }}/${img}`) : ['{{ asset('assets/images/placeholder.jpg') }}'];
             currentSlide = 0; updateSlider();
             
